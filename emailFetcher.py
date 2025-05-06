@@ -3,6 +3,7 @@ import getpass, imaplib
 
 imap_host = 'imap.gmail.com'  # Replace with the target email address
 
+
 if __name__ == "__main__":
     # Connect to the email server
     emailHandler = imaplib.IMAP4_SSL(imap_host)
@@ -14,14 +15,21 @@ if __name__ == "__main__":
     passwordVar = getpass.getpass()  # Prompt for the password
 
     # Login to the email account
-    print("Logging in with %s and %s" % (userVar, passwordVar))
-    emailHandler.login(userVar, passwordVar)
+    print("Logging in into %s" % (userVar))
+    loginResult = emailHandler.login(userVar, passwordVar)
 
+    # Print the login result
+    if loginResult[0] != 'OK':
+        # if login failed, print the error message
+        print("Login failed: %s" % (loginResult[1]))
+        exit(1)
+
+    # If login is successful, print the success message
+    print("Login successful!")
 
     emailHandler.select('Inbox')
+
     typ, data = emailHandler.search(None, 'ALL')
-    for num in data[0].split():
-        typ, data = emailHandler.fetch(num, '(RFC822)')
-        print('Message %s\n%s\n' %(num, data[0][1]))
+
     emailHandler.close()
     emailHandler.logout()
