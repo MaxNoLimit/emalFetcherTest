@@ -29,7 +29,13 @@ if __name__ == "__main__":
 
     emailHandler.select('Inbox')
 
-    typ, data = emailHandler.search(None, 'ALL')
+    tmp, data = emailHandler.search(None, 'ALL')
+    # tmp, data = emailHandler.fetch(data[0].split()[0], '(RFC822)')
+    # print("data: %s" % (data))
+
+    tmp, data = emailHandler.fetch(data[0].split()[0], '(RFC822)')
+    # Print the email data
+    print("data: \n%s" % (data[0][1]))
 
     emailHandler.close()
     emailHandler.logout()
