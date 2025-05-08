@@ -40,26 +40,10 @@ def fetch_email_with_imap_tools():
     userVar, passwordVar = login_email()
 
     # save login result
-    MailBox(imap_host).login(userVar, passwordVar)
+    tempMailBox = MailBox(imap_host).login(userVar, passwordVar)
 
-    # Print the login result
-    # if loginResult[0] != 'OK':
-    #     # if login failed, print the error message
-    #     print("Login failed: %s" % (loginResult[1]))
-    #     exit(1)
-
-    # # If login is successful, print the success message
-    # print("Login successful!")
-
-    for msg in MailBox.fetch(limit=5):
-        print(msg.subject)
-        print(msg.from_)
-        print(msg.date)
-        print(msg.text)
-        print(msg.html)
-        print(msg.attachments)
-    
-    print("Total emails fetched: %d" % (len(MailBox.fetch())))
+    for msg in tempMailBox.fetch(limit=5):
+        print(msg.date, msg.subject)
 
 def login_email():
     # getpass input for user
@@ -70,5 +54,3 @@ def login_email():
     return userVar, passwordVar
 
 
-if __name__ == "__main__":
-    fetch_email_with_imap_tools()
