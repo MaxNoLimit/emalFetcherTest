@@ -41,9 +41,27 @@ def fetch_email_with_imap_tools():
 
     # save login result
     tempMailBox = MailBox(imap_host).login(userVar, passwordVar)
+    # Print the login result
+    if tempMailBox.login_result[0] != 'OK':
+        # if login failed, print the error message
+        print("Login failed: %s" % (tempMailBox.login_result[1]))
+        exit(1)
 
-    for msg in tempMailBox.fetch(limit=5):
-        print(msg.date, msg.subject)
+    # If login is successful, print the success message
+    print("Login successful!")
+    print("fetching email pls wait...")
+    
+    # start looping to search a certain email
+    nCount = 0
+    for msg in tempMailBox.fetch():
+        nCount += 1
+        print(nCount)
+        if msg.subject == 'Lamaran Posisi Data Scientist – William Deli':
+            print(msg.from_, msg.date_str)
+            print(msg.text)
+            for atth in msg.attachments:
+                print(atth.filename)
+                print(atth.content_type)
 
 def login_email():
     # getpass input for user
