@@ -1,5 +1,4 @@
-# from imaplib import IMAP4_SSL
-import getpass, imaplib
+import getpass, imaplib, os
 from imap_tools import MailBox, AND
 
 imap_host = 'imap.gmail.com'  # Replace with the target email address
@@ -62,6 +61,11 @@ def fetch_email_with_imap_tools_specific_subject():
                 print(atth.content_type)
                 
 def fetch_email_with_imap_tools():
+    # making download attachment folder
+    SAVE_DIR ="download_attachment"
+    os.makedirs(SAVE_DIR, exist_ok=True)
+    print(f"Attachments will be saved to: {os.path.abspath(SAVE_DIR)}")
+    
     # perform input username and password
     userVar, passwordVar = login_email()
     wantedSubject = input("Subject (might be a keyword): ")
@@ -83,10 +87,18 @@ def fetch_email_with_imap_tools():
     for selectedMail in tempMailBox.fetch(AND(subject=wantedSubject)):
     # for selectedMail in tempMailBox.fetch(AND(subject='Lamaran Posisi')):
         print(selectedMail.from_, selectedMail.date_str)
-        print(selectedMail.text)
+        # print(selectedMail.text)
         for selectedAttach in selectedMail.attachments:
             print(selectedAttach.filename)
             print(selectedAttach.content_type)
+            file_path = os.path.join(SAVE_DIR, selectedAttach.filename)
+            print(f"  Downloading: {selectedAttach.filename} to {file_path}")
+            
+            with open(file_path, 'wb') as f:
+                f.write(selectedAttach.payload)
+                print("    Downloaded successfully.")
+    
+    
 
 def login_email():
     # getpass input for user
